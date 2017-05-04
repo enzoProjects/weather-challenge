@@ -3,7 +3,7 @@ Redbee challenge for JR developers
 
 ## Description
 
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
+* [Wheather API](https://developer.yahoo.com/weather) - The Weather API that we will consume
 
 ```
 Give an example
