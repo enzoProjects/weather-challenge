@@ -1,14 +1,32 @@
 # Weather Challenge
-Redbee challenge for JR developers
+Redbee challenge para developers JR.
 
-## Description
+## Descripción
+La idea del challenge es poder conocer dos cosas acerca de vos:
 
-## Dependencies
+- [x] Tu creatividad a la hora de programar. (Programar es un arte :beers:)
+- [x] Handson (Nerdpower! :muscle:)
 
-* [Wheather API](https://developer.yahoo.com/weather) - The Weather API that we will consume
+## Qué queremos que hagas
+La idea es desarrollar una aplicación que haga lo siguiente:
 
-## Upload solution
+* Colectar desde una API
+User el servicio REST que se menciona mas abajo y parsear sus resultados.
 
-```
-Give an example
-```
+* Guardar esa info en una base de datos
+Usá la BD que te parezca la mas apropiada.
+
+* Mostrar los resultados
+Con los ids de las ciudades, deberíamos poder mostrar la info recolectada.
+
+## Dependencias
+
+### * [Wheather API](https://developer.yahoo.com/weather) - La API del clima que vamos a utilizar.
+
+## Subir solución
+
+Solo hace un fork del repo y pushealo en tu cuenta. :smirk:
+
+* [Fork repository] (https://help.github.com/articles/fork-a-repo/) - Como hacer un fork de un repo.
+
+# Exitos! :wave:
