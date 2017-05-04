@@ -21,12 +21,12 @@ Con los ids de las ciudades, deberíamos poder mostrar la info recolectada.
 
 ## Dependencias
 
-### * [Wheather API](https://developer.yahoo.com/weather) - La API del clima que vamos a utilizar.
+* [Wheather API](https://developer.yahoo.com/weather) - La API del clima que vamos a utilizar.
 
 ## Subir solución
 
 Solo hace un fork del repo y pushealo en tu cuenta. :smirk:
 
-* [Fork repository] (https://help.github.com/articles/fork-a-repo/) - Como hacer un fork de un repo.
+* [Fork repository](https://help.github.com/articles/fork-a-repo/) - Como hacer un fork de un repo.
 
-# Exitos! :wave:
+### Exitos! :wave:
