@@ -5,13 +5,13 @@ Redbee challenge para developers JR.
 La idea del challenge es poder conocer dos cosas acerca de vos:
 
 - [x] Tu creatividad a la hora de programar. (Programar es un arte :beers:)
-- [x] Handson (Nerdpower! :muscle:)
+- [x] Hands-on (Nerdpower! :muscle:)
 
 ## Qué queremos que hagas
 La idea es desarrollar una aplicación que haga lo siguiente:
 
 * Colectar desde una API
-User el servicio REST que se menciona mas abajo y parsear sus resultados.
+User el servicio REST que se menciona mas abajo y parsear sus resultados, tené en cuenta que necesitamos que el proceso que colecta datos se ejecute indefinidamente, o hasta que lo cancelemos.
 
 * Guardar esa info en una base de datos
 Usá la BD que te parezca la mas apropiada.
@@ -21,7 +21,7 @@ Con los ids de las ciudades, deberíamos poder mostrar la info recolectada.
 
 ## Dependencias
 
-* [Wheather API](https://developer.yahoo.com/weather) - La API del clima que vamos a utilizar.
+* [Weather API](https://developer.yahoo.com/weather) - La API del clima que vamos a utilizar.
 
 ## Subir solución
 
