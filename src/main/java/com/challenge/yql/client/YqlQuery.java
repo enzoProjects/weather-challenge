@@ -12,7 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created by springfield-home on 7/1/17.
+ * Created by enzo on 7/1/17.
  */
 public class YqlQuery {
 
