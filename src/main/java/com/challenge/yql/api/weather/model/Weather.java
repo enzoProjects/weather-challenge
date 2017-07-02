@@ -91,7 +91,7 @@ public class Weather {
         this.woeid = woeid;
     }
 
-    public Weather buildWeather(JsonObject jsonObject, Long woeid) {
+    public Weather buildWeather(JsonObject jsonObject) {
         this.wind = ReflectionUtils.buildObject(new Wind(), jsonObject.getAsJsonObject("wind"));
         this.astronomy = ReflectionUtils.buildObject(new Astronomy(), jsonObject.getAsJsonObject("astronomy"));
         this.atmosphere = ReflectionUtils.buildObject(new Atmosphere(), jsonObject.getAsJsonObject("atmosphere"));
@@ -108,7 +108,6 @@ public class Weather {
         } else {
             forecasts.add(ReflectionUtils.buildObject(new Forecast(), jsonForecasts.getAsJsonObject()));
         }
-        this.woeid = woeid;
         return this;
     }
 }

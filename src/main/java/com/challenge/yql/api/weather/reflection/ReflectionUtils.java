@@ -14,9 +14,9 @@ import java.util.function.Predicate;
  */
 public class ReflectionUtils {
 
-    public static final String GETTER_JSON_ELEMENT = "getAs";
-    public static final String SET_PREFIX = "set";
-    public static final String SET_ID = "setId";
+    private static final String GETTER_JSON_ELEMENT = "getAs";
+    private static final String SET_PREFIX = "set";
+    private static final String SET_ID = "setId";
 
 
     public static <T> T buildObject(T t, JsonObject json, Predicate<Method> filter) {

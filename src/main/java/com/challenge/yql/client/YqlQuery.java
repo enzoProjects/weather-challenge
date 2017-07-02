@@ -21,18 +21,31 @@ public class YqlQuery {
     public static final String ENV = "env";
     public static final String FORMAT = "format";
     public static final String QUERY = "q";
+
     private final Logger logger = LoggerFactory.getLogger(YqlQuery.class);
     private final String queryString;
     private final List<String> environmentFiles = new LinkedList<String>();
     private URI compiledUri;
     private ResultFormat format;
 
-
+    /**
+     * Constructor of a YqlQuery
+     *
+     * @param queryString the format for the query
+     * @param n           the number of parameter that the query will have
+     * @param params      the parameters of the query
+     */
     public YqlQuery(String queryString, Integer n, String... params) {
         Assert.isTrue(n.equals(params.length), "number of params should be the same as n");
         this.queryString = MessageFormat.format(queryString, params);
     }
 
+
+    /**
+     * Set the parameter format
+     *
+     * @param format the format that could either JSON or XML
+     */
     public void setFormat(ResultFormat format) {
         this.format = format;
     }
@@ -74,6 +87,9 @@ public class YqlQuery {
         }
     }
 
+    /**
+     * Enum for type of response that will return
+     */
     public enum ResultFormat {
         XML("xml"),
         JSON("json");
