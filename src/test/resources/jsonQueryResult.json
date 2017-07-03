@@ -1,0 +1,149 @@
+{
+  "query": {
+    "count": 1,
+    "created": "2017-07-03T04:41:26Z",
+    "lang": "es-AR",
+    "results": {
+      "channel": {
+        "units": {
+          "distance": "mi",
+          "pressure": "in",
+          "speed": "mph",
+          "temperature": "F"
+        },
+        "title": "Yahoo! Weather - Sunnyvale, CA, US",
+        "link": "http://us.rd.yahoo.com/dailynews/rss/weather/Country__Country/*https://weather.yahoo.com/country/state/city-2502265/",
+        "description": "Yahoo! Weather for Sunnyvale, CA, US",
+        "language": "en-us",
+        "lastBuildDate": "Sun, 02 Jul 2017 09:41 PM PDT",
+        "ttl": "60",
+        "location": {
+          "city": "Sunnyvale",
+          "country": "United States",
+          "region": " CA"
+        },
+        "wind": {
+          "chill": "64",
+          "direction": "0",
+          "speed": "11"
+        },
+        "atmosphere": {
+          "humidity": "76",
+          "pressure": "1006.0",
+          "rising": "0",
+          "visibility": "16.1"
+        },
+        "astronomy": {
+          "sunrise": "5:51 am",
+          "sunset": "8:33 pm"
+        },
+        "image": {
+          "title": "Yahoo! Weather",
+          "width": "142",
+          "height": "18",
+          "link": "http://weather.yahoo.com",
+          "url": "http://l.yimg.com/a/i/brand/purplelogo//uh/us/news-wea.gif"
+        },
+        "item": {
+          "title": "Conditions for Sunnyvale, CA, US at 09:00 PM PDT",
+          "lat": "37.371609",
+          "long": "-122.038254",
+          "link": "http://us.rd.yahoo.com/dailynews/rss/weather/Country__Country/*https://weather.yahoo.com/country/state/city-2502265/",
+          "pubDate": "Sun, 02 Jul 2017 09:00 PM PDT",
+          "condition": {
+            "code": "31",
+            "date": "Sun, 02 Jul 2017 09:00 PM PDT",
+            "temp": "64",
+            "text": "Clear"
+          },
+          "forecast": [
+            {
+              "code": "30",
+              "date": "02 Jul 2017",
+              "day": "Sun",
+              "high": "81",
+              "low": "57",
+              "text": "Partly Cloudy"
+            },
+            {
+              "code": "34",
+              "date": "03 Jul 2017",
+              "day": "Mon",
+              "high": "81",
+              "low": "59",
+              "text": "Mostly Sunny"
+            },
+            {
+              "code": "34",
+              "date": "04 Jul 2017",
+              "day": "Tue",
+              "high": "77",
+              "low": "59",
+              "text": "Mostly Sunny"
+            },
+            {
+              "code": "30",
+              "date": "05 Jul 2017",
+              "day": "Wed",
+              "high": "74",
+              "low": "58",
+              "text": "Partly Cloudy"
+            },
+            {
+              "code": "30",
+              "date": "06 Jul 2017",
+              "day": "Thu",
+              "high": "76",
+              "low": "58",
+              "text": "Partly Cloudy"
+            },
+            {
+              "code": "34",
+              "date": "07 Jul 2017",
+              "day": "Fri",
+              "high": "76",
+              "low": "58",
+              "text": "Mostly Sunny"
+            },
+            {
+              "code": "34",
+              "date": "08 Jul 2017",
+              "day": "Sat",
+              "high": "79",
+              "low": "58",
+              "text": "Mostly Sunny"
+            },
+            {
+              "code": "32",
+              "date": "09 Jul 2017",
+              "day": "Sun",
+              "high": "79",
+              "low": "59",
+              "text": "Sunny"
+            },
+            {
+              "code": "34",
+              "date": "10 Jul 2017",
+              "day": "Mon",
+              "high": "80",
+              "low": "60",
+              "text": "Mostly Sunny"
+            },
+            {
+              "code": "34",
+              "date": "11 Jul 2017",
+              "day": "Tue",
+              "high": "79",
+              "low": "61",
+              "text": "Mostly Sunny"
+            }
+          ],
+          "description": "<![CDATA[<img src=\"http://l.yimg.com/a/i/us/we/52/31.gif\"/>\n<BR />\n<b>Current Conditions:</b>\n<BR />Clear\n<BR />\n<BR />\n<b>Forecast:</b>\n<BR /> Sun - Partly Cloudy. High: 81Low: 57\n<BR /> Mon - Mostly Sunny. High: 81Low: 59\n<BR /> Tue - Mostly Sunny. High: 77Low: 59\n<BR /> Wed - Partly Cloudy. High: 74Low: 58\n<BR /> Thu - Partly Cloudy. High: 76Low: 58\n<BR />\n<BR />\n<a href=\"http://us.rd.yahoo.com/dailynews/rss/weather/Country__Country/*https://weather.yahoo.com/country/state/city-2502265/\">Full Forecast at Yahoo! Weather</a>\n<BR />\n<BR />\n(provided by <a href=\"http://www.weather.com\" >The Weather Channel</a>)\n<BR />\n]]>",
+          "guid": {
+            "isPermaLink": "false"
+          }
+        }
+      }
+    }
+  }
+}
