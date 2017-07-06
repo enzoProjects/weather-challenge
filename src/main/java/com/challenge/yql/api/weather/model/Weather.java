@@ -1,11 +1,20 @@
 package com.challenge.yql.api.weather.model;
 
+import com.challenge.yql.api.weather.annotation.ObjectBuilderProperty;
 import com.challenge.yql.api.weather.model.subweather.*;
-import com.challenge.yql.api.weather.reflection.ReflectionUtils;
+import com.challenge.yql.api.weather.reflection.ObjectBuilder;
+import com.challenge.yql.api.weather.reflection.exception.ObjectBuilderException;
+import com.challenge.yql.api.weather.reflection.impl.ObjectBuilderImpl;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import springfox.documentation.spring.web.json.Json;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,16 +22,17 @@ import java.util.List;
 /**
  * Created by springfield-home on 7/1/17.
  */
+@Document
 public class Weather {
     @Id
     private String id;
     private Long woeid;
-    private Date lastBuildDate;
-    private Units units;
-    private Wind wind;
-    private Atmosphere atmosphere;
-    private Astronomy astronomy;
-    private List<Forecast> forecasts;
+    private LocalDate lastBuildDate;
+    private JsonElement units;
+    private JsonElement wind;
+    private JsonElement atmosphere;
+    private JsonElement astronomy;
+    private JsonArray forecasts;
 
     public Weather() {
     }
@@ -31,82 +41,48 @@ public class Weather {
         return id;
     }
 
+    @ObjectBuilderProperty(value = "transient")
     public void setId(String id) {
         this.id = id;
     }
 
-    public Wind getWind() {
-        return wind;
-    }
-
-    public void setWind(Wind wind) {
-        this.wind = wind;
-    }
-
-    public Atmosphere getAtmosphere() {
-        return atmosphere;
-    }
-
-    public void setAtmosphere(Atmosphere atmosphere) {
-        this.atmosphere = atmosphere;
-    }
-
-    public Astronomy getAstronomy() {
-        return astronomy;
-    }
-
-    public void setAstronomy(Astronomy astronomy) {
-        this.astronomy = astronomy;
-    }
-
-    public List<Forecast> getForecasts() {
-        return forecasts;
-    }
-
-    public void setForecasts(List<Forecast> forecasts) {
-        this.forecasts = forecasts;
-    }
-
-    public Date getLastBuildDate() {
+    public LocalDate getLastBuildDate() {
         return lastBuildDate;
     }
 
-    public void setLastBuildDate(Date lastBuildDate) {
+    public void setLastBuildDate(LocalDate lastBuildDate) {
         this.lastBuildDate = lastBuildDate;
-    }
-
-    public Units getUnits() {
-        return units;
-    }
-
-    public void setUnits(Units units) {
-        this.units = units;
     }
 
     public Long getWoeid() {
         return woeid;
     }
 
+    @ObjectBuilderProperty(value = "transient")
     public void setWoeid(Long woeid) {
         this.woeid = woeid;
     }
 
     public Weather buildWeather(JsonObject jsonObject) {
-        this.wind = ReflectionUtils.buildObject(new Wind(), jsonObject.getAsJsonObject("wind"));
-        this.astronomy = ReflectionUtils.buildObject(new Astronomy(), jsonObject.getAsJsonObject("astronomy"));
-        this.atmosphere = ReflectionUtils.buildObject(new Atmosphere(), jsonObject.getAsJsonObject("atmosphere"));
-        JsonElement jsonForecasts = jsonObject
-                .getAsJsonObject("item")
-                .get("forecast");
-        forecasts = new LinkedList<>();
-        if (jsonForecasts.isJsonArray()) {
-            jsonForecasts
-                    .getAsJsonArray()
-                    .forEach((f) -> {
-                        forecasts.add(ReflectionUtils.buildObject(new Forecast(), f.getAsJsonObject()));
-                    });
-        } else {
-            forecasts.add(ReflectionUtils.buildObject(new Forecast(), jsonForecasts.getAsJsonObject()));
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        ObjectBuilder objectBuilder = new ObjectBuilderImpl().setFormatter(dateFormatter);
+        try {
+            this.wind = objectBuilder.buildObject(jsonObject.getAsJsonObject("wind").getAsJsonObject(), Wind.class);
+            this.astronomy = objectBuilder.buildObject(jsonObject.getAsJsonObject("astronomy").getAsJsonObject(), Astronomy.class);
+            this.atmosphere = objectBuilder.buildObject(jsonObject.getAsJsonObject("atmosphere").getAsJsonObject(), Atmosphere.class);
+            JsonElement jsonForecasts = jsonObject
+                    .getAsJsonObject("item")
+                    .get("forecast");
+            forecasts = new LinkedList<>();
+
+            if (jsonForecasts.isJsonArray()) {
+                for (JsonElement jsonPlace : jsonForecasts.getAsJsonArray()) {
+                    forecasts.add(objectBuilder.buildObject(jsonPlace.getAsJsonObject(), Forecast.class));
+                }
+            } else {
+                forecasts.add(objectBuilder.buildObject(jsonForecasts.getAsJsonObject(), Forecast.class));
+            }
+        } catch (ObjectBuilderException ex) {
         }
         return this;
     }

@@ -3,7 +3,7 @@ package com.challenge.yql.api.weather.service.impl;
 import com.challenge.yql.api.weather.model.Weather;
 import com.challenge.yql.api.weather.repository.WeatherRepository;
 import com.challenge.yql.api.weather.service.WeatherService;
-import com.challenge.yql.api.weather.service.exception.ParseObjectFromJson;
+import com.challenge.yql.api.weather.service.exception.ParseObjectFromJsonException;
 import com.challenge.yql.client.YqlClient;
 import com.challenge.yql.client.YqlQuery;
 import com.challenge.yql.client.exception.YqlException;
@@ -60,7 +60,7 @@ public class WeatherServiceImpl implements WeatherService {
                 weather.setWoeid(woeid);
                 weatherRepository.save(weather);
                 return weather;
-            } catch (YqlException | ParseObjectFromJson ex) {
+            } catch (YqlException | ParseObjectFromJsonException ex) {
                 logger.error("error while creating object weather: {0}", ex.getMessage());
                 return new Weather();
             }
@@ -73,9 +73,9 @@ public class WeatherServiceImpl implements WeatherService {
      *
      * @param json result of a yqlQuery
      * @return Weather
-     * @throws ParseObjectFromJson if something goes wrong with the parse
+     * @throws ParseObjectFromJsonException if something goes wrong with the parse
      */
-    private Weather parseJsonToObjects(JsonObject json) throws ParseObjectFromJson {
+    private Weather parseJsonToObjects(JsonObject json) throws ParseObjectFromJsonException {
         JsonObject jsonPlaces = json
                 .getAsJsonObject("query")
                 .getAsJsonObject("results")

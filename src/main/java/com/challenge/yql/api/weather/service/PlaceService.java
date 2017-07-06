@@ -21,9 +21,9 @@ public interface PlaceService {
     List<Place> queryPlacesByText(String text);
 
     /**
-     * Query for the first appearance of a country just by looking on the string
+     * Query for the first appearance of a place just by looking on the string
      *
-     * @param country this should contain the country that we are looking for
+     * @param country this should contain the place that we are looking for
      * @return Country information with all the cities
      */
     Country queryPlacesByCountry(String country);

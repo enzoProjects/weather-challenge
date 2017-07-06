@@ -2,10 +2,11 @@ package com.challenge.yql.api.weather.service.impl;
 
 import com.challenge.yql.api.weather.model.Country;
 import com.challenge.yql.api.weather.model.Place;
-import com.challenge.yql.api.weather.reflection.ReflectionUtils;
+import com.challenge.yql.api.weather.reflection.ObjectBuilder;
+import com.challenge.yql.api.weather.reflection.impl.ObjectBuilderImpl;
 import com.challenge.yql.api.weather.repository.CountryRepository;
 import com.challenge.yql.api.weather.service.PlaceService;
-import com.challenge.yql.api.weather.service.exception.ParseObjectFromJson;
+import com.challenge.yql.api.weather.service.exception.ParseObjectFromJsonException;
 import com.challenge.yql.client.YqlClient;
 import com.challenge.yql.client.YqlQuery;
 import com.challenge.yql.client.exception.YqlException;
@@ -16,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -67,13 +69,13 @@ public class PlaceServiceImpl implements PlaceService {
         try {
             place = queryPlacesByText(sCountry)
                     .stream()
-                    .filter(Place::isCountry)
+                    .filter(Place::isbCountry)
                     .findFirst()
                     .orElseThrow(() -> new IllegalArgumentException("Imposible to find any country by that name"));
             country = countryRepository
-                    .findByWoeid(place.getWoeid())
+                    .findByPlaceWoeid(place.getWoeid())
                     .orElseThrow(() -> new Exception("could not find country {0} in db prociding to query"));
-            logger.debug("Country was found in the db with woeid: {0}", country.woeid);
+            logger.debug("Country was found in the db with woeid: {0}", country.getPlace().getWoeid());
             return country;
         } catch (IllegalArgumentException ex) {
             logger.error("Error while finding the woeid with the country name: {0}", ex.getMessage());
@@ -87,9 +89,8 @@ public class PlaceServiceImpl implements PlaceService {
                     GEO_PLACES_CHILDREN_SERVICE,
                     String.valueOf(place.getWoeid()));
             country = new Country();
-            country.places = filterCountriesOut(response.stream());
-            country.woeid = place.getWoeid();
-            country.countryName = place.getPrettyName();
+            country.setPlaces(filterCountriesOut(response.stream()));
+            country.setPlace(place);
             countryRepository.save(country);
             return country;
         }
@@ -107,7 +108,7 @@ public class PlaceServiceImpl implements PlaceService {
      */
     private List<Place> filterCountriesOut(Stream<Place> stream) {
         return stream
-                .filter((p) -> !p.isCountry())
+                .filter((p) -> !p.isbCountry())
                 .collect(Collectors.toList());
     }
 
@@ -127,7 +128,7 @@ public class PlaceServiceImpl implements PlaceService {
         yqlQuery.setFormat(YqlQuery.ResultFormat.JSON);
         try {
             return parseJsonToObjects(yqlClient.query(yqlQuery));
-        } catch (YqlException | ParseObjectFromJson ex) {
+        } catch (YqlException | ParseObjectFromJsonException ex) {
             logger.debug("Query error returning empty list: {0}", ex.getMessage());
             return new LinkedList<>();
         }
@@ -138,31 +139,27 @@ public class PlaceServiceImpl implements PlaceService {
      *
      * @param json result of a yqlQuery
      * @return Weather
-     * @throws ParseObjectFromJson if something goes wrong with the parse
+     * @throws ParseObjectFromJsonException if something goes wrong with the parse
      */
-    private List<Place> parseJsonToObjects(JsonObject json) throws ParseObjectFromJson {
+    private List<Place> parseJsonToObjects(JsonObject json) throws ParseObjectFromJsonException {
         try {
             JsonElement jsonPlaces = json
                     .getAsJsonObject("query")
                     .getAsJsonObject("results")
                     .get("place");
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            ObjectBuilder objectBuilder = new ObjectBuilderImpl().setFormatter(dateFormatter);
             List<Place> places = new LinkedList<>();
             if (jsonPlaces.isJsonArray()) {
                 for (JsonElement jsonPlace : jsonPlaces.getAsJsonArray()) {
-                    places.add(ReflectionUtils
-                            .buildObject(new Place(), jsonPlace.getAsJsonObject())
-                            .buildPrettyName());
+                    places.add(objectBuilder.buildObject(jsonPlace.getAsJsonObject(), Place.class));
                 }
-            } else if (jsonPlaces.isJsonObject()) {
-                places.add(ReflectionUtils
-                        .buildObject(new Place(), jsonPlaces.getAsJsonObject())
-                        .buildPrettyName());
             } else {
-                throw new Exception("Result is not as expected");
+                places.add(objectBuilder.buildObject(jsonPlaces.getAsJsonObject(), Place.class));
             }
             return places;
-        } catch (Exception e) {
-            throw new ParseObjectFromJson("Problem parsing object from json: " + e.getLocalizedMessage(), e);
+        } catch (Throwable e) {
+            throw new ParseObjectFromJsonException("Problem parsing object from json: " + e.getLocalizedMessage(), e);
         }
     }
 
