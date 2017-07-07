@@ -11,34 +11,9 @@ import java.util.List;
 @Document
 public class Country {
     @Id
-    private String id;
-    private Place place;
-    private List<Place> places;
+    public String id;
+    public Place countryInfo;
+    public List<Place> childrens;
 
-    public Country() {
-    }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public Place getPlace() {
-        return place;
-    }
-
-    public void setPlace(Place place) {
-        this.place = place;
-    }
-
-    public List<Place> getPlaces() {
-        return places;
-    }
-
-    public void setPlaces(List<Place> places) {
-        this.places = places;
-    }
 }
