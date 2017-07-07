@@ -48,14 +48,11 @@ public class HttpYqlClient implements YqlClient {
                 if (statusCode == HttpStatus.SC_OK) {
                     return jsonResult;
                 } else {
-                    logger.error("Error executing query status code: {0}", statusCode);
-                    logger.trace("Json result: {0}",jsonResult.getAsString());
                     throw new YqlException("Failed to execute YQL query (URL=" +
                             query.toUri() + "): " + statusCode, jsonResult);
                 }
             }
         } catch (ParseException | IOException e) {
-            logger.error("Error parsing query: {0}", e.getMessage());
             throw new YqlException("Failed to execute YQL query (URL="
                     + query.toUri() + "): " + e.getMessage(), e);
         }
