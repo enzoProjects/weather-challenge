@@ -1,49 +1,45 @@
 package com.challenge.yql.api.weather.model;
 
-import com.google.gson.JsonObject;
-import org.springframework.data.annotation.Transient;
+import com.challenge.yql.api.weather.annotation.ObjectBuilderProperty;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.google.gson.JsonElement;
 
 /**
  * Created by springfield-home on 7/1/17.
  */
 public class Place {
-    public static final String GETTER_JSON_ELEMENT = "getAs";
-    public static final String SET_ID = "setId";
-    public static final String SET_PREFIX = "set";
-
     private Long woeid;
-    private String prettyName;
-    @Transient
-    private JsonObject country;
-    @Transient
-    private JsonObject admin1;
-    @Transient
-    private JsonObject admin2;
-    @Transient
-    private JsonObject admin3;
-    @Transient
-    private JsonObject locality1;
-    @Transient
-    private JsonObject locality2;
-    private boolean isCountry;
+
+    private JsonElement country;
+    private JsonElement admin1;
+    private JsonElement admin2;
+    private JsonElement admin3;
+    private JsonElement locality1;
+    private JsonElement locality2;
+    private boolean bCountry;
+
 
     public Place() {
+        bCountry = true;
     }
 
-    public Place buildPrettyName() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(this.country.get("content").getAsString());
-        if (!(admin1 == null)) {
-            sb.append(", " + this.admin1.get("content").getAsString());
-            if (!(admin2 == null)) sb.append(", " + this.admin2.get("content").getAsString());
-            if (!(admin3 == null)) sb.append(", " + this.admin3.get("content").getAsString());
-            if (!(locality1 == null)) sb.append(", " + this.locality1.get("content").getAsString());
-            if (!(locality2 == null)) sb.append(", " + this.locality2.get("content").getAsString());
-        } else {
-            isCountry = true;
+    public String getPrettyName() {
+        StringBuilder prettyName = new StringBuilder();
+        append(prettyName, country);
+        if (!bCountry) {
+            append(prettyName, admin1, admin2, admin3, locality1, locality2);
         }
-        this.prettyName = sb.toString();
-        return this;
+        return prettyName.toString();
+    }
+
+    private void append(StringBuilder prettyName, JsonElement... objects) {
+        for (JsonElement obj : objects) {
+            if (!obj.isJsonNull()) {
+                prettyName
+                        .append(", ")
+                        .append(obj.getAsJsonObject().get("content").getAsString());
+            }
+        }
     }
 
     public Long getWoeid() {
@@ -54,38 +50,63 @@ public class Place {
         this.woeid = woeid;
     }
 
-    public void setAdmin1(JsonObject admin1) {
-        this.admin1 = admin1;
+    public JsonElement getCountry() {
+        return country;
     }
 
-    public void setAdmin2(JsonObject admin2) {
-        this.admin2 = admin2;
-    }
-
-    public void setAdmin3(JsonObject admin3) {
-        this.admin3 = admin3;
-    }
-
-    public String getPrettyName() {
-        return prettyName;
-    }
-
-    public void setLocality1(JsonObject locality1) {
-        this.locality1 = locality1;
-    }
-
-    public void setLocality2(JsonObject locality2) {
-        this.locality2 = locality2;
-    }
-
-    public boolean isCountry() {
-        return isCountry;
-    }
-
-    public void setCountry(JsonObject country) {
+    public void setCountry(JsonElement country) {
         this.country = country;
     }
 
+    public JsonElement getAdmin1() {
+        return admin1;
+    }
+
+    public void setAdmin1(JsonElement admin1) {
+        this.bCountry = false;
+        this.admin1 = admin1;
+    }
+
+    public JsonElement getAdmin2() {
+        return admin2;
+    }
+
+    public void setAdmin2(JsonElement admin2) {
+        this.admin2 = admin2;
+    }
+
+    public JsonElement getAdmin3() {
+        return admin3;
+    }
+
+    public void setAdmin3(JsonElement admin3) {
+        this.admin3 = admin3;
+    }
+
+    public JsonElement getLocality1() {
+        return locality1;
+    }
+
+    public void setLocality1(JsonElement locality1) {
+        this.locality1 = locality1;
+    }
+
+    public JsonElement getLocality2() {
+        return locality2;
+    }
+
+    public void setLocality2(JsonElement locality2) {
+        this.locality2 = locality2;
+    }
+
+    public boolean isbCountry() {
+        return bCountry;
+    }
+
+    @ObjectBuilderProperty(value = "transient")
+    public void setbCountry(boolean bCountry) {
+        this.bCountry = bCountry;
+    }
 }
 
 
