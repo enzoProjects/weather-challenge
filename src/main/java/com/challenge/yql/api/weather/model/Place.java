@@ -25,7 +25,7 @@ public class Place {
 
     private String formNameFromLocations(StringBuilder sb, Location... locations) {
         for (Location location : locations) {
-            if (location != null) sb.append(", ").append(country.content);
+            if (location != null) sb.append(", ").append(location.content);
         }
         return sb.toString();
     }

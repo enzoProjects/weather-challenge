@@ -2,6 +2,7 @@ package com.challenge.yql.api.weather.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 import java.util.List;
@@ -26,6 +27,7 @@ public class Weather {
             public Integer high;
             public String day;
             public String text;
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
             public String date;
         }
     }

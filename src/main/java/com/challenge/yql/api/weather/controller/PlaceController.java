@@ -24,12 +24,12 @@ public class PlaceController {
         this.placeService = placeService;
     }
 
-    @RequestMapping(value = "/place/text/{text}", method = RequestMethod.GET)
+    @RequestMapping(value = "/rest/place/text/{text}", method = RequestMethod.GET)
     public List<Place> getPlacesByText(@PathVariable String text) {
         return placeService.queryPlacesByText(text);
     }
 
-    @RequestMapping(value = "/place/country/{country}", method = RequestMethod.GET)
+    @RequestMapping(value = "/rest/place/country/{country}", method = RequestMethod.GET)
     public Country getPlacesByCountry(@PathVariable String country) {
         return placeService.queryPlacesByCountry(country);
     }

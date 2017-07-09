@@ -4,8 +4,9 @@ import com.challenge.yql.api.weather.model.Country;
 import com.challenge.yql.api.weather.model.Place;
 import com.challenge.yql.api.weather.repository.CountryRepository;
 import com.challenge.yql.api.weather.service.PlaceService;
-import com.challenge.yql.api.weather.service.exception.ParseObjectFromJsonException;
+import com.challenge.yql.api.weather.service.exception.YqlClientException;
 import com.challenge.yql.api.weather.utils.ObjectBuildUtils;
+import com.challenge.yql.api.weather.utils.ObjectUtilsException;
 import com.challenge.yql.client.YqlClient;
 import com.challenge.yql.client.YqlQuery;
 import com.challenge.yql.client.exception.YqlException;
@@ -127,9 +128,12 @@ public class PlaceServiceImpl implements PlaceService {
         yqlQuery.setFormat(YqlQuery.ResultFormat.JSON);
         try {
             return parseJsonToObjects(yqlClient.query(yqlQuery));
-        } catch (YqlException | ParseObjectFromJsonException ex) {
-            logger.debug("Query error returning empty list: {}", ex.getMessage());
-            return new LinkedList<>();
+        } catch (YqlException queryEx) {
+            logger.error("Query error: {}", queryEx.getMessage());
+            throw new YqlClientException("Problem in the query: " + queryEx.getMessage(), queryEx);
+        } catch (JsonSyntaxException parseEx) {
+            logger.error("Parse error: {}", parseEx.getMessage());
+            throw new YqlClientException("Problem in the query: " + parseEx.getMessage(), parseEx);
         }
     }
 
@@ -138,25 +142,28 @@ public class PlaceServiceImpl implements PlaceService {
      *
      * @param json result of a yqlQuery
      * @return Weather
-     * @throws ParseObjectFromJsonException if something goes wrong with the parse
      */
-    private List<Place> parseJsonToObjects(JsonObject json) throws ParseObjectFromJsonException {
+    private List<Place> parseJsonToObjects(JsonObject json) {
+
+        Gson gson = new GsonBuilder().serializeNulls().setPrettyPrinting().create();
+
+        JsonElement jsonPlaces = null;
         try {
-            Gson gson = new GsonBuilder().serializeNulls().setPrettyPrinting().create();
-
-            JsonElement jsonPlaces = ObjectBuildUtils.extractJsonElementFromJson(json, JSON_PATH);
-
-            List<Place> places = new LinkedList<>();
-            if (jsonPlaces.isJsonArray()) {
-                jsonPlaces.getAsJsonArray()
-                        .forEach((jPlace) -> places.add(gson.fromJson(jPlace, Place.class)));
-            } else {
-                places.add(gson.fromJson(jsonPlaces, Place.class));
-            }
-            return places;
-        } catch (JsonSyntaxException e) {
-            throw new ParseObjectFromJsonException("Problem parsing object from json: " + e.getLocalizedMessage(), e);
+            jsonPlaces = ObjectBuildUtils.extractJsonElementFromJson(json, JSON_PATH);
+        } catch (ObjectUtilsException respEx) {
+            logger.error("Response from client error: {}", respEx.getMessage());
+            throw new YqlClientException("Problem in the response: " + respEx.getMessage(), respEx);
         }
+
+        List<Place> places = new LinkedList<>();
+        if (jsonPlaces.isJsonArray()) {
+            jsonPlaces.getAsJsonArray()
+                    .forEach((jPlace) -> places.add(gson.fromJson(jPlace, Place.class)));
+        } else {
+            places.add(gson.fromJson(jsonPlaces, Place.class));
+        }
+        return places;
+
     }
 
 
