@@ -16,4 +16,10 @@ public interface WeatherService {
      * @return Returns the weather information of one city
      */
     Weather queryWeatherByWoeid(Long woeid);
+
+    void addWeatherToUpdate(Long woeid, String username);
+
+    void removeWeatherToUpdate(String username);
+
+    void addUserToUpdates(String username);
 }

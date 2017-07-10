@@ -21,7 +21,7 @@ public class WeatherController {
         this.weatherService = weatherService;
     }
 
-    @RequestMapping(value = "/rest/weather/woeid/{woeid}", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/weather/woeid/{woeid}", method = RequestMethod.GET)
     public Weather getWeatherByWoeid(@PathVariable Long woeid) {
         return weatherService.queryWeatherByWoeid(woeid);
     }

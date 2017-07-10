@@ -28,13 +28,13 @@ public class PlaceController {
         this.placeService = placeService;
     }
 
-    @RequestMapping(value = "/rest/place/text/{text}", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/place/text/{text}", method = RequestMethod.GET)
     public List<Place> getPlacesByText(@PathVariable String text) {
         System.out.println(request);
         return placeService.queryPlacesByText(text);
     }
 
-    @RequestMapping(value = "/rest/place/country/{country}", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/place/country/{country}", method = RequestMethod.GET)
     public Country getPlacesByCountry(HttpServletRequest request, @PathVariable String country) {
         System.out.println(request);
 

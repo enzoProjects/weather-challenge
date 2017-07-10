@@ -1,5 +1,6 @@
 package com.challenge.yql.api.weather.service.impl;
 
+import com.challenge.yql.api.weather.model.User;
 import com.challenge.yql.api.weather.model.Weather;
 import com.challenge.yql.api.weather.repository.WeatherRepository;
 import com.challenge.yql.api.weather.service.WeatherService;
@@ -19,6 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * Created by springfield-home on 7/1/17.
  */
@@ -30,6 +34,10 @@ public class WeatherServiceImpl implements WeatherService {
     private static final int WEATHER_FORECAST_SERVICE_PARAMS = 3;
     private static final String WILD_CARD = "*";
     private static final String[] JSON_PATH_FORECAST = {"query", "results", "channel", "item"};
+
+
+    private static final Map<String, Set<Long>> usersConnectedToUpdates = new ConcurrentHashMap<>();
+
 
 
     private final YqlClient yqlClient;
@@ -78,6 +86,22 @@ public class WeatherServiceImpl implements WeatherService {
         }
 
     }
+
+    @Override
+    public void addWeatherToUpdate(Long woeid, String username) {
+        usersConnectedToUpdates.get(username).add(woeid);
+    }
+
+    @Override
+    public void removeWeatherToUpdate(String username) {
+        usersConnectedToUpdates.remove(username);
+    }
+
+    @Override
+    public void addUserToUpdates(String username) {
+        usersConnectedToUpdates.put(username, ConcurrentHashMap.newKeySet());
+    }
+
 
     /**
      * Parse JsonResponse to a Weather
