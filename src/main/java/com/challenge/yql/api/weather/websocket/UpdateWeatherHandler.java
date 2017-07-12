@@ -1,15 +1,19 @@
 package com.challenge.yql.api.weather.websocket;
 
-import com.challenge.yql.api.weather.service.WeatherService;
+import com.challenge.yql.api.weather.service.impl.WeatherServiceImpl;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 import sun.plugin.dom.exception.InvalidStateException;
 
 import java.io.IOException;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by springfield-home on 7/9/17.
@@ -17,17 +21,31 @@ import java.io.IOException;
 @Component
 public class UpdateWeatherHandler implements WebSocketHandler {
 
+    Logger logger = LoggerFactory.getLogger(UpdateWeatherHandler.class);
+
+
     private final Gson gson = new GsonBuilder().create();
 
-    private final WeatherService weatherService;
+
+    private static final Map<String, WebSocketSession> SESSIONS = new ConcurrentHashMap<>();
 
 
-    @Autowired
-    public UpdateWeatherHandler(WeatherService weatherService) {
-        this.weatherService = weatherService;
+    public UpdateWeatherHandler() {
     }
 
-    public void socketCallback(String json, WebSocketSession session) {
+    public void sendWeatherUpdate(Long woeid, Set<String> usernames) {
+        if (usernames == null) return;
+        logger.debug("we gonna send you updates this usernames : " + (usernames) + " adding this woeid to the list: " + woeid);
+        usernames.forEach((u)-> prepareUpdate(u, woeid));
+    }
+
+
+
+    public static boolean isActiveUser(String username) {
+        return SESSIONS.containsKey(username);
+    }
+
+    private void socketCallback(String json, WebSocketSession session) {
         if (!checkSession(session)) {
             throw new InvalidStateException("Session is not open yet or don't exist");
         }
@@ -38,17 +56,17 @@ public class UpdateWeatherHandler implements WebSocketHandler {
         }
     }
 
-    private static boolean checkSession(WebSocketSession session) {
-        return session != null && session.isOpen();
-    }
+
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         if (!checkSession(session)) {
             throw new InvalidStateException("Session is not open yet or don't exist");
         }
-        String username = session.getPrincipal().getName();
-        weatherService.addUserToUpdates(username);
+        //String username = session.getPrincipal().getName();
+        String username = "prueba";
+        logger.info("new websocket connection: " + username);
+        SESSIONS.put(username, session);
     }
 
     @Override
@@ -57,14 +75,23 @@ public class UpdateWeatherHandler implements WebSocketHandler {
             throw new InvalidStateException("Session is not open yet or don't exist");
         }
         try {
-            String username = session.getPrincipal().getName();
+            //String username = session.getPrincipal().getName();
+            String username = "prueba";
             IncomingSocketMessage socketMessage = gson
                     .fromJson((String) (message.getPayload()), IncomingSocketMessage.class);
-            weatherService.addWeatherToUpdate(socketMessage.woeid, username);
+            switch (socketMessage.action) {
+                case "add":
+                    logger.debug("new weather update ask from: " + username + " adding this woeid to the list: " + socketMessage.woeid);
+                    WeatherServiceImpl.addWeatherToUpdate(socketMessage.woeid, username);
+                    break;
+                case "remove":
+                    logger.debug("remove weather update ask from: " + username + " removing this woeid to the list: " + socketMessage.woeid);
+                    WeatherServiceImpl.removeWeatherToUpdate(socketMessage.woeid, username);
+                    break;
+            }
         } catch (JsonSyntaxException syntaxEx) {
-            OutcommingSocketError error = new OutcommingSocketError(syntaxEx);
+            OutSocketError error = new OutSocketError(syntaxEx);
             socketCallback(gson.toJson(error), session);
-
         }
     }
 
@@ -75,8 +102,10 @@ public class UpdateWeatherHandler implements WebSocketHandler {
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
-        String username = session.getPrincipal().getName();
-        weatherService.removeWeatherToUpdate(username);
+        //String username = session.getPrincipal().getName();
+        String username = "prueba";
+        logger.info("remove websocket connection: " + username);
+        SESSIONS.remove(username);
     }
 
     @Override
@@ -84,15 +113,35 @@ public class UpdateWeatherHandler implements WebSocketHandler {
         return false;
     }
 
+    private void prepareUpdate(String username, Long woeid) {
+        WebSocketSession session = SESSIONS.get(username);
+        if(!checkSession(session)) {
+            throw new InvalidStateException("Session is not open yet or don't exist");
+        }
+        try {
+            IncomingSocketMessage socketMessage = new IncomingSocketMessage();
+            socketMessage.woeid = woeid;
+            socketCallback(gson.toJson(socketMessage), session);
+        } catch (Exception parseError) {
+            OutSocketError error = new OutSocketError(parseError);
+            socketCallback(gson.toJson(error), session);
+        }
+    }
+
     private static class IncomingSocketMessage {
+        public String action;
         public Long woeid;
     }
 
-    private static class OutcommingSocketError {
+    private static boolean checkSession(WebSocketSession session) {
+        return session != null && session.isOpen();
+    }
+
+    private static class OutSocketError {
         public String error;
         public String message;
 
-        public OutcommingSocketError(Exception syntaxEx) {
+        public OutSocketError(Exception syntaxEx) {
             this.error = "Error on message: ";
             this.message = syntaxEx.getMessage();
         }

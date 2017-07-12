@@ -30,7 +30,38 @@ public class Weather {
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
             public String date;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Forecast forecast = (Forecast) o;
+
+            return pubDate.equals(forecast.pubDate);
+        }
+
+        @Override
+        public int hashCode() {
+            return pubDate.hashCode();
+        }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
+        Weather weather = (Weather) o;
+
+        if (!woeid.equals(weather.woeid)) return false;
+        return item.equals(weather.item);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = woeid.hashCode();
+        result = 31 * result + item.hashCode();
+        return result;
+    }
 }
