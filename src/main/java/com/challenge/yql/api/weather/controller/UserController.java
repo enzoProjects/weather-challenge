@@ -2,10 +2,7 @@ package com.challenge.yql.api.weather.controller;
 
 import com.challenge.yql.api.weather.model.User;
 import com.challenge.yql.api.weather.service.UserService;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -21,6 +18,7 @@ public class UserController {
         this.userService = userService;
     }
 
+    @CrossOrigin("*")
     @RequestMapping(value = "/register", method = RequestMethod.POST )
     public void createNewUser(@Valid @RequestBody User user) {
         userService.createUser(user);

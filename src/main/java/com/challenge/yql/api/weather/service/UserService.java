@@ -10,4 +10,6 @@ import org.springframework.stereotype.Service;
 @Service
 public interface UserService {
     void createUser(User user) throws UserCreationException;
+
+    void saveToken(String uuid, Object principal);
 }

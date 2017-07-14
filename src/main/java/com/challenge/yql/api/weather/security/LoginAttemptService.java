@@ -1,5 +1,7 @@
 package com.challenge.yql.api.weather.security;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 /**
@@ -7,9 +9,12 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public interface LoginAttemptService {
-    void loginSucceeded(String key);
+    String loginSucceeded(String key, Authentication authResult);
 
     void loginFailed(String key);
 
     boolean isBlocked(String key);
+
+    UserDetails userDetailsFromToken(String token);
+
 }

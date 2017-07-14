@@ -30,4 +30,9 @@ public class UserServiceImpl implements UserService {
             throw new UserCreationException("the user exists: " + user.getUsername(), ex);
         }
     }
+
+    @Override
+    public void saveToken(String uuid, Object principal) {
+
+    }
 }

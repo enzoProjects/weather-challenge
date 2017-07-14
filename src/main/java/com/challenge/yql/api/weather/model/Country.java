@@ -10,8 +10,6 @@ import java.util.List;
  */
 @Document
 public class Country {
-    @Id
-    public String id;
     public Place countryInfo;
     public List<Place> childrens;
 

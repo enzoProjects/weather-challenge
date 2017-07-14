@@ -13,7 +13,6 @@ public interface WeatherService {
      * Query the weather of one particular woeid
      *
      * @param woeid the woeid of the city that we want to know the weather
-     * @param b
      * @return Returns the weather information of one city
      */
     Weather queryWeatherByWoeid(Long woeid);

@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 import sun.plugin.dom.exception.InvalidStateException;
@@ -19,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created by springfield-home on 7/9/17.
  */
 @Component
-public class UpdateWeatherHandler implements WebSocketHandler {
+public class    UpdateWeatherHandler implements WebSocketHandler {
 
     Logger logger = LoggerFactory.getLogger(UpdateWeatherHandler.class);
 
@@ -63,8 +64,8 @@ public class UpdateWeatherHandler implements WebSocketHandler {
         if (!checkSession(session)) {
             throw new InvalidStateException("Session is not open yet or don't exist");
         }
-        //String username = session.getPrincipal().getName();
-        String username = "prueba";
+        String username = session.getId();
+        //String username = "prueba";
         logger.info("new websocket connection: " + username);
         SESSIONS.put(username, session);
     }
@@ -75,8 +76,8 @@ public class UpdateWeatherHandler implements WebSocketHandler {
             throw new InvalidStateException("Session is not open yet or don't exist");
         }
         try {
-            //String username = session.getPrincipal().getName();
-            String username = "prueba";
+            String username = session.getId();
+            //String username = "prueba";
             IncomingSocketMessage socketMessage = gson
                     .fromJson((String) (message.getPayload()), IncomingSocketMessage.class);
             switch (socketMessage.action) {
@@ -102,8 +103,8 @@ public class UpdateWeatherHandler implements WebSocketHandler {
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
-        //String username = session.getPrincipal().getName();
-        String username = "prueba";
+        String username = session.getId();
+        //String username = "prueba";
         logger.info("remove websocket connection: " + username);
         SESSIONS.remove(username);
     }
